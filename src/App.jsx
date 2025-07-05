@@ -93,7 +93,8 @@ function App() {
   const loadSaved = async() => {
     const res = await fetch('http://localhost:5000/saved');
     const data = await res.json(); //important to use await
-    // console.log('loaded saved data: ', data);
+    // console.log('loaded saved dataimport { class } from './../node_modules/@babel/parser/lib/index';
+//: ', data);
     setSavedTexts(data);
   };
 
@@ -131,7 +132,6 @@ function App() {
           <p key={i}>{user}</p>
         ))
       )} */}
-
       <div className='flex-col h-full'>
         <h1>Bionic Textify</h1>
         <p>
@@ -139,9 +139,9 @@ function App() {
           input your text into the box, click the Bionic Textify button, and view 
           your new, highlighted and bolded text that guides your eyes for faster reading.
         </p>
-        <button onClick={handleSave} className='float-right my-2 bg-amber-600 border-2 border-amber-950 text-amber-950 hover:border-white hover:text-white'>Save Text</button>
-        <button onClick={refreshBox} className='float-right my-2 bg-amber-600 border-2 border-amber-950 text-amber-950 hover:border-white hover:text-white'>Reset Text Area</button>
-        <button onClick={toBionicText} className='float-right my-2 bg-amber-600 border-2 border-amber-950 text-amber-950 hover:border-white hover:text-white overflow-auto'>Bionic-Textify!</button>
+        <button onClick={handleSave} className='float-right my-2 bg-amber-600 border-2 border-amber-950 text-amber-950 hover:border-white dark:hover:text-white'>Save Text</button>
+        <button onClick={refreshBox} className='float-right my-2 bg-amber-600 border-2 border-amber-950 text-amber-950 hover:border-white dark:hover:text-white'>Reset Text Area</button>
+        <button onClick={toBionicText} className='float-right my-2 bg-amber-600 border-2 border-amber-950 text-amber-950 hover:border-white dark:hover:text-white overflow-auto'>Bionic-Textify!</button>
         <div ref={textToEdit} contentEditable='plaintext-only' className='bg-amber-50 text-gray-800 w-full h-100 mt-5 rounded-lg overflow-auto'/>
 
         {/* testing viewing if texts save */}
@@ -160,7 +160,7 @@ function App() {
                     <span
                       dangerouslySetInnerHTML={{ __html: entry.bionicText }}
                     />
-                    <button onClick={() => handleDelete(entry.id)} className='bg-amber-600 border-2 border-amber-950 text-amber-950 hover:border-neutral-400 hover:text-white h-13' >X</button>
+                    <button onClick={() => handleDelete(entry.id)} className='border-2 border-amber-950 text-amber-950 hover:border-red-500 hover:text-red-500 h-13' >X</button>
                   </p>
                   <p className="text-xs text-gray-500 mt-1">Saved: {new Date(entry.createdAt).toLocaleString()}</p>
                 </li>
