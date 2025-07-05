@@ -42,15 +42,15 @@ app.delete('/delete/:id', (req, res) => {
     res.json({ success: true });
 })
 
-//app.listen(5000, () => { console.log("Server started on port 5000")})
+app.listen(5000, () => { console.log("Server started on port 5000")})
 
 //production deployment code
-app.use(express.static(path.join(__dirname, '../dist')));
+// app.use(express.static(path.join(__dirname, '../dist')));
 
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../dist/index.html'));
-});
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../dist/index.html'));
+// });
 
-app.listen(PORT, () => {
-    console.log('Server running on port ${PORT}');
-});
+// app.listen(PORT, () => {
+//     console.log('Server running on port ${PORT}');
+// });
