@@ -1,5 +1,6 @@
 const cors = require('cors');
 const express = require('express')
+const path = require('path');
 const app = express()
 app.use(cors());
 app.use(express.json());
@@ -14,7 +15,7 @@ app.use(express.json());
 //testing actual text saving
 const savedTexts = [];
 
-app.post('/save', (req, res) => {
+app.post('/api/save', (req, res) => {
     const { inputText, bionicText } = req.body;
     const newEntry = {
         id: Date.now().toString(),
@@ -26,11 +27,11 @@ app.post('/save', (req, res) => {
     res.status(201).json(newEntry);
 });
 
-app.get('/saved', (req, res) => {
+app.get('/api/saved', (req, res) => {
     res.json(savedTexts);
 });
 
-app.delete('/delete/:id', (req, res) => {
+app.delete('/api/delete/:id', (req, res) => {
     const { id } = req.params;
     const index = savedTexts.findIndex(entry => entry.id === id);
 
@@ -42,15 +43,20 @@ app.delete('/delete/:id', (req, res) => {
     res.json({ success: true });
 })
 
-app.listen(5000, () => { console.log("Server started on port 5000")})
+//app.listen(5000, () => { console.log("Server started on port 5000")})
 
 //production deployment code
-// app.use(express.static(path.join(__dirname, '../dist')));
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '..', 'dist')));
 
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, '../dist/index.html'));
-// });
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
+});
 
-// app.listen(PORT, () => {
-//     console.log('Server running on port ${PORT}');
-// });
+// Start the server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});

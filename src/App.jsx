@@ -72,7 +72,7 @@ function App() {
     }
   
     try {
-      const res = await fetch('http://localhost:5000/save', {
+      const res = await fetch('/api/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -91,7 +91,7 @@ function App() {
   };
 
   const loadSaved = async() => {
-    const res = await fetch('http://localhost:5000/saved');
+    const res = await fetch('/api/saved');
     const data = await res.json(); //important to use await
     // console.log('loaded saved dataimport { class } from './../node_modules/@babel/parser/lib/index';
 //: ', data);
@@ -101,7 +101,7 @@ function App() {
   const handleDelete = async (id) => {
     console.log('delete item clicked for', id);
     try {
-      const res = await fetch(`http://localhost:5000/delete/${id}`, {
+      const res = await fetch(`/api/delete/${id}`, {
         method: 'DELETE'
       });
   
