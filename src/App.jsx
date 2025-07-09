@@ -2,6 +2,9 @@ import { useRef , useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { db, auth } from './firebase.js';
+import { ref, push, set, onValue, remove } from 'firebase/database';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 function App() {
   //testing out backend connection stuff
@@ -22,6 +25,9 @@ function App() {
   const [savedTexts, setSavedTexts] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [generatedText, setGeneratedText] = useState('');
+
+  //setting up firebase w/ auth
+  const [user] = useAuthState(auth);
 
   const toBionicText = () => {
     const textBox = textToEdit.current;
@@ -60,60 +66,111 @@ function App() {
 
   // actual text/data functionality
 
-  //on reload, auto show saved texts
-  useEffect(() => {
-    loadSaved();
-  }, []);
+  // on reload, auto show saved texts, works locally
+  // useEffect(() => {
+  //   loadSaved();
+  // }, []);
 
-  const handleSave = async () => {
-    if (!userInput || !generatedText) {
+  //checking uid
+  useEffect(() => {
+    if (user){
+      console.log('Signed in as: ', user.uid);
+    }
+  }, [user]);
+
+  // trying firebase loading saved on startup
+  useEffect(() =>{
+    if (!user) return;
+    const userRef = ref(db, `users/${user.uid}`);
+    onValue(userRef, (snapshot) =>{
+      const data = snapshot.val();
+      if(data) {
+        const entries = Object.entries(data).map(([id, value]) =>({
+          id,
+          ...value
+        }));
+        setSavedTexts(entries.reverse());
+      } else{
+        setSavedTexts([]);
+      }
+    });
+  }, [user]);
+
+  // this save version below worked for local saving
+  // const handleSave = async () => {
+  //   if (!userInput || !generatedText) {
+  //     alert("Please bionic-textify something first!");
+  //     return;
+  //   }
+  
+  //   try {
+  //     const res = await fetch('/api/save', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({
+  //         inputText: userInput,
+  //         bionicText: generatedText
+  //       })
+  //     });
+  
+  //     if (!res.ok) throw new Error('Failed to save text');
+  //     alert('Text saved successfully!');
+  //     loadSaved();
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert('Failed to save text');
+  //   }
+  // };
+
+  // trying saving to firebase
+  const handleSave = async () =>{
+    if(!userInput || !generatedText){
       alert("Please bionic-textify something first!");
       return;
     }
+
+    const newRef = push(ref(db, `users/${user.uid}`));
+    await set(newRef, {
+      inputText: userInput,
+      bionicText: generatedText,
+      createdAt: new Date().toISOString()
+    });
+    alert('Text saved succesfully!')
+  }
+
+// for loading data when local
+//   const loadSaved = async() => {
+//     const res = await fetch('/api/saved');
+//     const data = await res.json(); //important to use await since want JSON to finish parse first
+//     // console.log('loaded saved dataimport { class } from './../node_modules/@babel/parser/lib/index';
+// //: ', data);
+//     setSavedTexts(data);
+//   };
+
+  // delete for local
+  // const handleDelete = async (id) => {
+  //   console.log('delete item clicked for', id);
+  //   try {
+  //     const res = await fetch(`/api/delete/${id}`, {
+  //       method: 'DELETE'
+  //     });
   
-    try {
-      const res = await fetch('/api/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          inputText: userInput,
-          bionicText: generatedText
-        })
-      });
+  //     if (!res.ok) throw new Error('Delete failed');
   
-      if (!res.ok) throw new Error('Failed to save text');
-      alert('Text saved successfully!');
-      loadSaved();
-    } catch (err) {
-      console.error(err);
-      alert('Failed to save text');
-    }
+  //     setSavedTexts(savedTexts.filter(entry => entry.id !== id));
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert('Failed to delete text');
+  //   }
+  // };
+
+  // delete for firebase
+  const handleDelete = async (id) =>{
+    const deleteRef = ref(db, `users/${user.uid}/${id}`);
+    await remove(deleteRef);
   };
 
-  const loadSaved = async() => {
-    const res = await fetch('/api/saved');
-    const data = await res.json(); //important to use await
-    // console.log('loaded saved dataimport { class } from './../node_modules/@babel/parser/lib/index';
-//: ', data);
-    setSavedTexts(data);
-  };
-
-  const handleDelete = async (id) => {
-    console.log('delete item clicked for', id);
-    try {
-      const res = await fetch(`/api/delete/${id}`, {
-        method: 'DELETE'
-      });
-  
-      if (!res.ok) throw new Error('Delete failed');
-  
-      setSavedTexts(savedTexts.filter(entry => entry.id !== id));
-    } catch (err) {
-      console.error(err);
-      alert('Failed to delete text');
-    }
-  };
-
+  // load text into box by clicking, works both local and fb
   const loadText = (html) => {
     const textBox = textToEdit.current;
     if(textBox){
@@ -121,6 +178,7 @@ function App() {
       textBox.scrollIntoView({ behavior: 'smooth' });
     }
   }
+
 
   return (
     <>
