@@ -135,7 +135,7 @@ function App() {
       bionicText: generatedText,
       createdAt: new Date().toISOString()
     });
-    alert('Text saved succesfully!')
+    //alert('Text saved succesfully!')
   }
 
 // for loading data when local
