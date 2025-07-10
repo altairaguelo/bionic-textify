@@ -191,15 +191,13 @@ function App() {
         ))
       )} */}
       <div className='flex-col h-full'>
-        <h1>Bionic Textify</h1>
+        <h1 className='mb-2'><b>Bio</b>nic <b>Text</b>ify</h1>
         <p>
-          Make any text easier and quicker to read by making it bionic! Simply 
-          input your text into the box, click the Bionic Textify button, and view 
-          your new, highlighted and bolded text that guides your eyes for faster reading.
+          <b>Ma</b>ke <b>a</b>ny <b>te</b>xt <b>eas</b>ier <b>a</b>nd <b>quic</b>ker <b>t</b>o <b>re</b>ad <b>b</b>y <b>mak</b>ing <b>i</b>t <b>bion</b>ic! <b>Sim</b>ply <b>inp</b>ut <b>yo</b>ur <b>te</b>xt <b>in</b>to <b>t</b>he <b>bo</b>x, <b>cli</b>ck <b>t</b>he <b>Bio</b>nic <b>Text</b>ify <b>butt</b>on, <b>a</b>nd <b>vi</b>ew <b>yo</b>ur <b>ne</b>w, <b>highli</b>ghted <b>a</b>nd <b>bol</b>ded <b>te</b>xt <b>th</b>at <b>gui</b>des <b>yo</b>ur <b>ey</b>es <b>f</b>or <b>fas</b>ter <b>read</b>ing.
         </p>
-        <button onClick={handleSave} className='float-right my-2 bg-amber-600 border-2 border-amber-950 text-amber-950 hover:border-white dark:hover:text-white'>Save Text</button>
-        <button onClick={refreshBox} className='float-right my-2 bg-amber-600 border-2 border-amber-950 text-amber-950 hover:border-white dark:hover:text-white'>Reset Text Area</button>
-        <button onClick={toBionicText} className='float-right my-2 bg-amber-600 border-2 border-amber-950 text-amber-950 hover:border-white dark:hover:text-white overflow-auto'>Bionic-Textify!</button>
+        <button onClick={handleSave} className='float-right my-2 bg-amber-600 border-2 border-amber-950 text-amber-950 hover:border-white dark:hover:text-white mx-1'>Save Text</button>
+        <button onClick={refreshBox} className='float-right my-2 bg-amber-600 border-2 border-amber-950 text-amber-950 hover:border-white dark:hover:text-white mx-1'>Reset Text Area</button>
+        <button onClick={toBionicText} className='float-right my-2 bg-amber-600 border-2 border-amber-950 text-amber-950 hover:border-white dark:hover:text-white overflow-auto mx-1'>Bionic-Textify!</button>
         <div ref={textToEdit} contentEditable='plaintext-only' className='bg-amber-50 text-gray-800 w-full h-100 mt-5 rounded-lg overflow-auto'/>
 
         {/* testing viewing if texts save */}
@@ -218,7 +216,10 @@ function App() {
                     <span
                       dangerouslySetInnerHTML={{ __html: entry.bionicText }}
                     />
-                    <button onClick={() => handleDelete(entry.id)} className='border-2 border-amber-950 text-amber-950 hover:border-red-500 hover:text-red-500 h-13' >X</button>
+                    <button onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(entry.id);
+                    }} className='border-2 border-amber-950 text-amber-950 hover:border-red-500 hover:text-red-500 h-13' >X</button>
                   </p>
                   <p className="text-xs text-gray-500 mt-1">Saved: {new Date(entry.createdAt).toLocaleString()}</p>
                 </li>
